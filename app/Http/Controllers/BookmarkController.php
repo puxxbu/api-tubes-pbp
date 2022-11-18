@@ -56,11 +56,37 @@ class BookmarkController extends Controller
      * @param  \App\Models\Bookmark  $bookmark
      * @return \Illuminate\Http\Response
      */
-    public function show(Bookmark $bookmark)
+    public function show($cari = null)
     {
-        return response()->json([
-            'data' => $bookmark
-        ]);
+        $data = Bookmark::query()
+        ->where('nama', 'LIKE', $cari) 
+        ->orWhere('alamat', 'LIKE', $cari) 
+        ->orWhere('id', 'LIKE', $cari) 
+        ->get();
+        if(count($data) > 1) {
+            return response()->json([
+                'status' => 200,
+                'error' => "false",
+                'message' => '',
+                'totaldata' => count($data),
+                'data' => $data,
+            ],200);
+        }else if(count($data) == 1) {
+            return response()->json([
+                'status' => 200,
+                'error' => "false",
+                'message' => '',
+                'totaldata' => count($data),
+                'data' => $data,
+            ],200);
+        }else {
+            return response()->json([
+                'status' => 404,
+                'error' => "true",
+                'message' => 'Data not found',
+                'data' => $data,
+            ],200);
+        }
     }
 
     /**
