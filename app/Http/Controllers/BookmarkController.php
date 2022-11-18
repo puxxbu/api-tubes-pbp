@@ -46,6 +46,7 @@ class BookmarkController extends Controller
         ]);
 
         return response()->json([
+            'message' => 'add success',
             'data' => $bookmark
         ]);
     }
