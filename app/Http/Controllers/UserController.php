@@ -50,7 +50,8 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'data' => $user
+            'data' => $user,
+            'message' => 'Register Success'
         ]);
     }
 
@@ -60,11 +61,37 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show($cari = null)
     {
-        return response()->json([
-            'data' => $user
-        ]);
+
+        $data = User::query()
+        ->where('username', 'LIKE', $cari) 
+        ->get();
+        if(count($data) > 1) {
+            return response()->json([
+                'status' => 200,
+                'error' => "false",
+                'message' => '',
+                'totaldata' => count($data),
+                'data' => $data,
+            ],200);
+        }else if(count($data) == 1) {
+            return response()->json([
+                'status' => 200,
+                'error' => "false",
+                'message' => '',
+                'totaldata' => count($data),
+                'data' => $data,
+            ],200);
+        }else {
+            return response()->json([
+                'status' => 404,
+                'error' => "true",
+                'message' => 'Data not found',
+                'data' => $data,
+            ],404);
+        }
+
     }
 
     /**
@@ -97,7 +124,8 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'data' => $user
+            'data' => $user,
+            'message' => 'Update Success'
         ]);
         
     }
