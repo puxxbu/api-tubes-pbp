@@ -65,7 +65,7 @@ class UserController extends Controller
     {
 
         $data = User::query()
-        ->where('username', 'LIKE', $cari) 
+        ->where('id', 'LIKE', $cari) 
         ->get();
         if(count($data) > 1) {
             return response()->json([
