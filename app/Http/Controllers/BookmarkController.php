@@ -60,8 +60,8 @@ class BookmarkController extends Controller
     public function show($cari = null)
     {
         $data = Bookmark::query()
-        ->where('nama', 'LIKE', $cari) 
-        ->orWhere('alamat', 'LIKE', $cari) 
+        ->where('nama', 'LIKE', '%'.$cari.'%') 
+        ->orWhere('alamat', 'LIKE', '%'.$cari.'%') 
         ->orWhere('id', 'LIKE', $cari) 
         ->get();
         if(count($data) > 1) {
