@@ -114,12 +114,13 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $newDate = date('Y-m-d H:i:s', strtotime($request->tglLahir));
         $user->nama = $request->nama;
         $user->username = $request->username;
         $user->password = $request->password;
         $user->email = $request->email;
         $user->noHP = $request->noHP;
-        $user->tglLahir = $request->tglLahir;
+        $user->tglLahir = $newDate;
 
         $user->save();
 
