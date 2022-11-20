@@ -116,7 +116,8 @@ class BookmarkController extends Controller
         $bookmark->save();
 
         return response()->json([
-            'data' => $bookmark
+            'data' => $bookmark,
+            'message' => 'Update Berhasil'
         ]);
     }
 
