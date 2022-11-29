@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -40,6 +42,20 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $newDate = date('Y-m-d H:i:s', strtotime($request->tglLahir));
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' =>  'required',
+            'nama' =>  'required',
+            'email' =>  'required',
+            'noHP' =>  'required',
+            'tglLahir' =>  'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $user = User::create([
             'username' => $request->username,
             'password' => $request->password,
@@ -48,11 +64,7 @@ class UserController extends Controller
             'noHP' => $request->noHP,
             'tglLahir' => $newDate
         ]);
-
-        return response()->json([
-            'data' => $user,
-            'message' => 'Register Success'
-        ]);
+        return new UserResource(true, 'Data Pegawai Berhasil Ditambahkan!', $user);
     }
 
     /**
