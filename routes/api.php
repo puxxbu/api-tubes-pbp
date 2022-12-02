@@ -21,4 +21,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('users', UserController::class);
+Route::post('/login', [UserController::class, 'login']);
 Route::apiResource('bookmarks', BookmarkController::class);

@@ -77,33 +77,32 @@ class UserController extends Controller
     {
 
         $data = User::query()
-        ->where('id', 'LIKE', $cari) 
-        ->get();
-        if(count($data) > 1) {
+            ->where('id', 'LIKE', $cari)
+            ->get();
+        if (count($data) > 1) {
             return response()->json([
                 'status' => 200,
                 'error' => "false",
                 'message' => '',
                 'totaldata' => count($data),
                 'data' => $data,
-            ],200);
-        }else if(count($data) == 1) {
+            ], 200);
+        } else if (count($data) == 1) {
             return response()->json([
                 'status' => 200,
                 'error' => "false",
                 'message' => '',
                 'totaldata' => count($data),
                 'data' => $data,
-            ],200);
-        }else {
+            ], 200);
+        } else {
             return response()->json([
                 'status' => 404,
                 'error' => "true",
                 'message' => 'Data not found',
                 'data' => $data,
-            ],404);
+            ], 404);
         }
-
     }
 
     /**
@@ -140,7 +139,6 @@ class UserController extends Controller
             'data' => $user,
             'message' => 'Update Success'
         ]);
-        
     }
 
     /**
@@ -154,6 +152,42 @@ class UserController extends Controller
         $user->delete();
         return response()->json([
             'message' => 'User Berhasil didelete'
-        ],204);
+        ], 204);
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'username' => 'required',
+                'password' =>  'required',
+            ],
+            [
+                'username.required' => 'Username masih kosong!',
+                'password.required' => 'Password masih kosong!',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::query()
+            ->where('username', $request->username)
+            ->where('password', $request->password)
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Username atau Password Salah !'
+            ], 401);
+        }
+
+        return response()->json([
+            'data' => $user,
+            'success' => true,
+            'message' => 'Anda Berhasil Login!'
+        ]);
     }
 }
