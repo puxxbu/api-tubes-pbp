@@ -43,14 +43,27 @@ class UserController extends Controller
     {
         $newDate = date('Y-m-d H:i:s', strtotime($request->tglLahir));
 
-        $validator = Validator::make($request->all(), [
-            'username' => 'required',
-            'password' =>  'required',
-            'nama' =>  'required',
-            'email' =>  'required',
-            'noHP' =>  'required',
-            'tglLahir' =>  'required'
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'username' => 'required',
+                'password' =>  'required',
+                'nama' =>  'required',
+                'email' =>  'required|email:rfc,dns',
+                'noHP' =>  'required|min:6',
+                'tglLahir' =>  'required'
+            ],
+            [
+                'username.required' => 'Username masih kosong!',
+                'password.required' => 'Password masih kosong!',
+                'nama.required' => 'Nama masih kosong!',
+                'email.required' => 'Email masih kosong!',
+                'noHP.required' => 'Nomor HP masih kosong!',
+                'noHP.min' => 'Nomor HP minimal 6 digit!',
+                'tglLahir.required' => 'Tanggal lahir masih kosong!',
+            ]
+
+        );
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
