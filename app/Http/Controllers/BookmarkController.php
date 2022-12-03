@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bookmark;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BookmarkController extends Controller
 {
@@ -39,7 +40,19 @@ class BookmarkController extends Controller
      */
     public function store(Request $request)
     {
-        
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'nama' => 'required',
+                'alamat' => 'required',
+            ],
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
         $bookmark = Bookmark::create([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
@@ -60,33 +73,33 @@ class BookmarkController extends Controller
     public function show($cari = null)
     {
         $data = Bookmark::query()
-        ->where('nama', 'ilike', '%'.$cari.'%') 
-        ->orWhere('alamat', 'ilike', '%'.$cari.'%') 
-        ->orWhere('id', 'ilike', $cari) 
-        ->get();
-        if(count($data) > 1) {
+            ->where('nama', 'ilike', '%' . $cari . '%')
+            ->orWhere('alamat', 'ilike', '%' . $cari . '%')
+            ->orWhere('id', 'ilike', $cari)
+            ->get();
+        if (count($data) > 1) {
             return response()->json([
                 'status' => 200,
                 'error' => "false",
                 'message' => '',
                 'totaldata' => count($data),
                 'data' => $data,
-            ],200);
-        }else if(count($data) == 1) {
+            ], 200);
+        } else if (count($data) == 1) {
             return response()->json([
                 'status' => 200,
                 'error' => "false",
                 'message' => '',
                 'totaldata' => count($data),
                 'data' => $data,
-            ],200);
-        }else {
+            ], 200);
+        } else {
             return response()->json([
                 'status' => 404,
                 'error' => "true",
                 'message' => 'Data not found',
                 'data' => $data,
-            ],200);
+            ], 200);
         }
     }
 
@@ -132,6 +145,6 @@ class BookmarkController extends Controller
         $bookmark->delete();
         return response()->json([
             'message' => 'Bookmark Berhasil didelete'
-        ],204);
+        ], 204);
     }
 }
