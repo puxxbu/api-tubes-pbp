@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class UserController extends Controller
 {
@@ -77,6 +78,10 @@ class UserController extends Controller
             'noHP' => $request->noHP,
             'tglLahir' => $newDate
         ]);
+
+        event(new Registered($user));
+        auth()->login($user);
+
         return new UserResource(true, 'Data Pegawai Berhasil Ditambahkan!', $user);
     }
 
