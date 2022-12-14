@@ -50,7 +50,7 @@ class UserController extends Controller
                 'username' => 'required',
                 'password' =>  'required',
                 'nama' =>  'required',
-                'email' =>  'required|email:rfc,dns',
+                'email' =>  'required|email:rfc,dns|unique:users',
                 'noHP' =>  'required|min:6',
                 'tglLahir' =>  'required'
             ],
@@ -195,6 +195,10 @@ class UserController extends Controller
             ->where('username', $request->username)
             ->where('password', $request->password)
             ->first();
+
+        if ($user->email_verified_at == null) {
+            return response(['message' => 'Verifikasi Email Terlebih dahulu'], 401);
+        }
 
         if (!$user) {
             return response()->json([
