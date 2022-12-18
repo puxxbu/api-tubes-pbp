@@ -194,7 +194,6 @@ class UserController extends Controller
 
         $user = User::query()
             ->where('username', $request->username)
-            ->where('password', $request->password)
             ->first();
 
         if (!Auth::attempt($request->all())) {
