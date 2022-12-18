@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,7 +73,7 @@ class UserController extends Controller
 
         $user = User::create([
             'username' => $request->username,
-            'password' => $request->password,
+            'password' => bcrypt($request->password),
             'nama' => $request->nama,
             'email' => $request->email,
             'noHP' => $request->noHP,
@@ -195,6 +196,10 @@ class UserController extends Controller
             ->where('username', $request->username)
             ->where('password', $request->password)
             ->first();
+
+        if (!Auth::attempt($request->all())) {
+            return response(['message' => 'Invalid Credential'], 401);
+        }
 
         if ($user->email_verified_at == null) {
             return response(['message' => 'Verifikasi Email Terlebih dahulu'], 401);
